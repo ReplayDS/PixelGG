@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model SiteConfig {
+  id        Int      @id
+  data      Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+model User {
+  id           Int         @id @default(autoincrement())
+  name         String
+  username     String      @unique
+  email        String      @unique
+  passwordHash String
+  avatar       String?
+  role         UserRole    @default(USER)
+  favorites    Favorite[]
+  orders       Order[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model Favorite {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  productId Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+}
+
+model Order {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  total     Float
+  status    String   @default("PAID")
+  items     Json
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+

@@ -1,0 +1,10 @@
+-- CreateTable
+CREATE TABLE "SiteConfig" (
+  "id" INTEGER NOT NULL,
+  "data" JSONB NOT NULL,
+  "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updatedAt" TIMESTAMP(3) NOT NULL,
+
+  CONSTRAINT "SiteConfig_pkey" PRIMARY KEY ("id")
+);
+

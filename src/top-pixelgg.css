@@ -1,0 +1,174 @@
+.topdeck-wrap {
+  width: 100%;
+  padding: 12px 0 62px;
+  overflow: visible;
+}
+
+.topdeck-stage {
+  position: relative;
+  height: 470px;
+  border-radius: 0;
+  overflow: visible;
+  background: transparent;
+  border: none;
+}
+
+.topdeck-cards {
+  --card-spread: 340px;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding-bottom: 8px;
+  animation: deckDrift 6.8s ease-in-out infinite;
+}
+
+.topdeck-card {
+  position: absolute;
+  left: 50%;
+  width: 244px;
+  height: 350px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  box-shadow: 0 24px 36px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  cursor: pointer;
+  transform: translateX(calc(-50% + (var(--offset) * var(--card-spread))))
+    rotate(calc(var(--offset) * 7deg))
+    translateY(calc(var(--distance) * 30px))
+    scale(calc(1 - var(--distance) * 0.08));
+  transition: transform 780ms cubic-bezier(0.22, 1, 0.36, 1), opacity 600ms ease;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+.topdeck-card.is-center {
+  cursor: default;
+}
+
+.topdeck-pattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.18;
+  background-image: radial-gradient(circle at 10px 10px, #fff 1.2px, transparent 0);
+  background-size: 20px 20px;
+}
+
+.topdeck-head {
+  position: relative;
+  z-index: 2;
+  padding: 14px 14px 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.topdeck-head small {
+  display: block;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  margin-bottom: 6px;
+}
+
+.topdeck-head h3 {
+  color: #fff;
+  font-size: 28px;
+  line-height: 0.95;
+  max-width: 118px;
+  text-transform: uppercase;
+}
+
+.topdeck-score {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 46px;
+  height: 26px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  color: #1f2937;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.topdeck-open {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(8, 10, 15, 0.55);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 8px 10px;
+  z-index: 3;
+  cursor: pointer;
+}
+
+.topdeck-arrow {
+  position: absolute;
+  top: 48%;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(0, 0, 0, 0.42);
+  color: #fff;
+  cursor: pointer;
+  z-index: 30;
+}
+
+.topdeck-arrow.left {
+  left: 16px;
+}
+
+.topdeck-arrow.right {
+  right: 16px;
+}
+
+@keyframes deckDrift {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@media (max-width: 900px) {
+  .topdeck-stage {
+    height: 392px;
+  }
+
+  .topdeck-cards {
+    --card-spread: 200px;
+  }
+
+  .topdeck-card {
+    width: 198px;
+    height: 286px;
+  }
+}
+
+@media (max-width: 600px) {
+  .topdeck-wrap {
+    padding-bottom: 30px;
+  }
+
+  .topdeck-stage {
+    border-radius: 0;
+    height: 340px;
+  }
+
+  .topdeck-cards {
+    --card-spread: 118px;
+  }
+
+  .topdeck-card {
+    width: 164px;
+    height: 246px;
+  }
+}

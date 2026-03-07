@@ -1,0 +1,61 @@
+.catalog-wrap { min-height: 100vh; background: #07090d; color: #fff; }
+.catalog-main { display: grid; grid-template-columns: 280px 1fr; gap: 20px; padding: 20px 40px 40px; }
+.catalog-side { display: flex; flex-direction: column; gap: 14px; }
+.catalog-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 14px;
+}
+.catalog-box h4 { margin: 0 0 10px; font-size: 16px; }
+.catalog-cats { display: flex; flex-direction: column; gap: 8px; }
+.catalog-cats button {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: #d5deeb;
+  border-radius: 10px;
+  padding: 9px 10px;
+  text-align: left;
+  cursor: pointer;
+}
+.catalog-cats button.active { background: #fff; color: #121212; border-color: #fff; }
+.catalog-check { display: flex; gap: 8px; font-size: 14px; margin-bottom: 12px; }
+.catalog-label { display: block; font-size: 12px; color: #9eacbe; margin-bottom: 6px; }
+
+.catalog-content { min-width: 0; }
+.catalog-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.catalog-head button { border: none; background: transparent; color: #b8c3d4; cursor: pointer; font-size: 14px; }
+.catalog-head h2 { margin: 0; font-size: 28px; }
+
+.catalog-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.catalog-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 10px;
+  cursor: pointer;
+}
+.catalog-card img { width: 100%; height: 220px; object-fit: cover; border-radius: 10px; display: block; margin-bottom: 10px; }
+.catalog-card h3 { margin: 0 0 8px; font-size: 16px; }
+.catalog-prices { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+.catalog-prices .discount { background: #1f6feb; font-size: 12px; padding: 4px 8px; border-radius: 6px; }
+.catalog-prices .old { color: #7f8793; text-decoration: line-through; font-size: 13px; }
+.catalog-prices .new { font-size: 16px; font-weight: 700; }
+.catalog-buy {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+.catalog-empty { color: #97a3b3; font-size: 14px; padding: 20px 10px; }
+
+@media (max-width: 1100px) {
+  .catalog-main { grid-template-columns: 1fr; padding: 16px; }
+  .catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 640px) {
+  .catalog-grid { grid-template-columns: 1fr; }
+}
