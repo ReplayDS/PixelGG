@@ -58,6 +58,14 @@ export default function SiteHeader() {
 
   const cartCount = cartProducts.reduce((sum, item) => sum + item.qty, 0);
 
+  // navegação segura que fecha o popup primeiro
+  function navigateTo(hash) {
+    setOpenPopup(null);
+    setTimeout(() => {
+      window.location.hash = hash;
+    }, 100);
+  }
+
   async function handleCheckout() {
     if (cartProducts.length === 0) {
       setActionMsg("Carrinho vazio. Adicione produtos para continuar.");
@@ -69,8 +77,8 @@ export default function SiteHeader() {
       setAuthMode("login");
       return;
     }
-    // redirect to checkout page with Pix payment
-    window.location.hash = "#checkout";
+    // fechar popup e navegar para checkout com pix
+    navigateTo("#checkout");
   }
 
   async function handleLogin(e) {
@@ -220,16 +228,16 @@ export default function SiteHeader() {
                 </div>
 
                 <div className="site-user-nav">
-                  <button onClick={() => { window.location.hash = "#perfil"; setOpenPopup(null); }}>Editar Perfil</button>
-                  <button onClick={() => { window.location.hash = "#pedidos"; setOpenPopup(null); }}>Meus pedidos</button>
-                  <button onClick={() => { window.location.hash = "#favoritos"; setOpenPopup(null); }}>Favoritos</button>
+                  <button onClick={() => navigateTo("#perfil")}>Editar Perfil</button>
+                  <button onClick={() => navigateTo("#pedidos")}>Meus pedidos</button>
+                  <button onClick={() => navigateTo("#favoritos")}>Favoritos</button>
                 </div>
 
                 {/* conteúdos agora estão em páginas separadas, o popup se limita a links e logout */}
 
                 <button className="site-popup-danger" onClick={logoutUser}>Sair</button>
                 {userAccount.role === "ADMIN" && (
-                  <button className="site-popup-ghost" onClick={() => { window.location.hash = "#admin"; setOpenPopup(null); }}>
+                  <button className="site-popup-ghost" onClick={() => navigateTo("#admin")}>
                     Abrir painel admin
                   </button>
                 )}
