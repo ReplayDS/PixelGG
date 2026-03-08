@@ -7,11 +7,37 @@ function formatBRL(value) {
 }
 
 export default function CheckoutPage() {
-  const { cartProducts, cartTotal, authToken } = useSiteData();
+  const { cartProducts, cartTotal, authToken, userAccount } = useSiteData();
   const [chargeData, setChargeData] = useState(null);
+  const [orderId, setOrderId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [msg, setMsg] = useState("");
   const [orderStatus, setOrderStatus] = useState("pending"); // pending, waiting, paid, failed
+
+  if (!userAccount.loggedIn) {
+    return (
+      <div className="page checkout-page">
+        <h1>Checkout</h1>
+        <p className="site-msg error">Você precisa estar logado para continuar com o pagamento.</p>
+        <button className="site-popup-action" onClick={() => { window.location.hash = ""; }}>
+          Voltar à loja
+        </button>
+      </div>
+    );
+  }
+
+  if (!authToken) {
+    return (
+      <div className="page checkout-page">
+        <h1>Checkout</h1>
+        <p className="site-msg error">Erro ao autenticar. Recarregue a página.</p>
+        <button className="site-popup-action" onClick={() => { window.location.reload(); }}>
+          Recarregar
+        </button>
+      </div>
+    );
+  }
 
   async function handleInitiatePayment() {
     setLoading(true);

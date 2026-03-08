@@ -77,6 +77,7 @@ function Router() {
   if (route.page === 'admin') return <AdminPanel />;
   if (route.page === "profile") return <ProfilePage />;
   if (route.page === "orders") return <OrdersPage />;
+  if (route.page === "favorites") return <FavoritesPage />;
   if (route.page === "checkout") return <CheckoutPage />;
   if (route.page === "chat") return <ChatPage orderId={route.orderId} />;
   if (route.page === "catalog") return <CatalogPage categoryId={route.categoryId} />;

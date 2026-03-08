@@ -21,7 +21,6 @@ export default function SiteHeader() {
     removeFromCart,
     updateCartQty,
     clearCart,
-    checkoutCart,
     userAccount,
     authLoading,
     loginUser,
@@ -60,13 +59,18 @@ export default function SiteHeader() {
   const cartCount = cartProducts.reduce((sum, item) => sum + item.qty, 0);
 
   async function handleCheckout() {
-    if (!userAccount.loggedIn) {
-      setActionMsg("Por favor, faça login para continuar.");
-      setOpenPopup("user");
+    if (cartProducts.length === 0) {
+      setActionMsg("Carrinho vazio. Adicione produtos para continuar.");
       return;
     }
+    if (!userAccount.loggedIn) {
+      setActionMsg("Faça login para continuar.");
+      setOpenPopup("user");
+      setAuthMode("login");
+      return;
+    }
+    // redirect to checkout page with Pix payment
     window.location.hash = "#checkout";
-    setOpenPopup(null);
   }
 
   async function handleLogin(e) {
