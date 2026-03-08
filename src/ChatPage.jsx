@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSiteData } from "./SiteDataContext";
 import SiteHeader from "./SiteHeader";
+import "./chat-page.css";
 
 // very basic skeleton; real implementation requires backend support and polling/websockets
 export default function ChatPage({ orderId }) {

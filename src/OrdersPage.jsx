@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useSiteData } from "./SiteDataContext";
 import SiteHeader from "./SiteHeader";
+import "./orders-page.css";
 
 function formatBRL(value) {
   const numeric = Number(value || 0);

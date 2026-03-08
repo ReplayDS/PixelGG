@@ -1,0 +1,46 @@
+.orders-page {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.orders-page h1 {
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+}
+
+.orders-page .order-item {
+  background: #f9f9f9;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #007bff;
+}
+
+.orders-page .order-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+.orders-page .order-items {
+  margin: 1rem 0;
+  padding-left: 1rem;
+}
+
+.orders-page .order-items li {
+  margin: 0.5rem 0;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.orders-page .order-total {
+  text-align: right;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #ddd;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #007bff;
+}
