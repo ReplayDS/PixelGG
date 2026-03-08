@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useSiteData } from "./SiteDataContext";
+import SiteHeader from "./SiteHeader";
 
 function formatBRL(value) {
   const numeric = Number(value || 0);
@@ -16,7 +17,9 @@ export default function OrdersPage() {
   const { userOrders } = useSiteData();
 
   return (
-    <div className="page orders-page">
+    <>
+      <SiteHeader />
+      <div className="page orders-page">
       <h1>Meus pedidos</h1>
       {userOrders.length === 0 && <p>Nenhum pedido realizado até o momento.</p>}
       {userOrders.map((order) => (
@@ -36,5 +39,6 @@ export default function OrdersPage() {
         </div>
       ))}
     </div>
+    </>
   );
 }

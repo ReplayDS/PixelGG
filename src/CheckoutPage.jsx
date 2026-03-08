@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSiteData } from "./SiteDataContext";
+import SiteHeader from "./SiteHeader";
 
 function formatBRL(value) {
   const numeric = Number(value || 0);
@@ -17,25 +18,31 @@ export default function CheckoutPage() {
 
   if (!userAccount.loggedIn) {
     return (
-      <div className="page checkout-page">
-        <h1>Checkout</h1>
-        <p className="site-msg error">Você precisa estar logado para continuar com o pagamento.</p>
-        <button className="site-popup-action" onClick={() => { window.location.hash = ""; }}>
-          Voltar à loja
-        </button>
-      </div>
+      <>
+        <SiteHeader />
+        <div className="page checkout-page">
+          <h1>Checkout</h1>
+          <p className="site-msg error">Você precisa estar logado para continuar com o pagamento.</p>
+          <button className="site-popup-action" onClick={() => { window.location.hash = ""; }}>
+            Voltar à loja
+          </button>
+        </div>
+      </>
     );
   }
 
   if (!authToken) {
     return (
-      <div className="page checkout-page">
-        <h1>Checkout</h1>
-        <p className="site-msg error">Erro ao autenticar. Recarregue a página.</p>
-        <button className="site-popup-action" onClick={() => { window.location.reload(); }}>
-          Recarregar
-        </button>
-      </div>
+      <>
+        <SiteHeader />
+        <div className="page checkout-page">
+          <h1>Checkout</h1>
+          <p className="site-msg error">Erro ao autenticar. Recarregue a página.</p>
+          <button className="site-popup-action" onClick={() => { window.location.reload(); }}>
+            Recarregar
+          </button>
+        </div>
+      </>
     );
   }
 
@@ -112,7 +119,9 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="page checkout-page">
+    <>
+      <SiteHeader />
+      <div className="page checkout-page">
       <h1>Pagamento</h1>
 
       <div className="checkout-items">
@@ -189,5 +198,6 @@ export default function CheckoutPage() {
         </div>
       )}
     </div>
+    </>
   );
 }

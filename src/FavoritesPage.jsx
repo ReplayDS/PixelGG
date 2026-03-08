@@ -1,4 +1,5 @@
 import { useSiteData } from "./SiteDataContext";
+import SiteHeader from "./SiteHeader";
 
 function formatBRL(value) {
   const numeric = Number(value || 0);
@@ -9,7 +10,9 @@ export default function FavoritesPage() {
   const { favoriteProducts } = useSiteData();
 
   return (
-    <div className="page favorites-page">
+    <>
+      <SiteHeader />
+      <div className="page favorites-page">
       <h1>Favoritos</h1>
       {favoriteProducts.length === 0 && <p>Você ainda não favoritou nenhum produto.</p>}
       <div className="site-list">
@@ -24,5 +27,6 @@ export default function FavoritesPage() {
         ))}
       </div>
     </div>
+    </>
   );
 }

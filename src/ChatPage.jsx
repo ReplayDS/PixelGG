@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSiteData } from "./SiteDataContext";
+import SiteHeader from "./SiteHeader";
 
 // very basic skeleton; real implementation requires backend support and polling/websockets
 export default function ChatPage({ orderId }) {
@@ -44,7 +45,9 @@ export default function ChatPage({ orderId }) {
   }
 
   return (
-    <div className="page chat-page">
+    <>
+      <SiteHeader />
+      <div className="page chat-page">
       <h1>Chat do pedido {orderId}</h1>
       <div className="chat-history">
         {messages.map((m) => (
@@ -62,5 +65,6 @@ export default function ChatPage({ orderId }) {
         <button type="submit">Enviar</button>
       </form>
     </div>
+    </>
   );
 }

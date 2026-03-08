@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSiteData } from "./SiteDataContext";
-import "./profile-page.css"; // you can create this file for custom styles if desired
+import SiteHeader from "./SiteHeader";
+import "./profile-page.css";
 
 function formatBRL(value) {
   const numeric = Number(value || 0);
@@ -49,7 +50,9 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="page profile-page">
+    <>
+      <SiteHeader />
+      <div className="page profile-page">
       <h1>Editar perfil</h1>
       <form className="site-form" onSubmit={handleSave}>
         <input
@@ -98,5 +101,6 @@ export default function ProfilePage() {
       {msg && <div className="site-msg">{msg}</div>}
       {error && <div className="site-msg error">{error}</div>}
     </div>
+    </>
   );
 }
