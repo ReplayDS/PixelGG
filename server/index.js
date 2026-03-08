@@ -5,6 +5,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import { prisma } from "./db.js";
 
 const app = express();
@@ -423,6 +424,7 @@ app.post("/api/checkout/woovi", authRequired, async (req, res) => {
       value: Math.round(total * 100), // in cents
       description: `Pedido #${order.id} - PixelGG`,
       orderId: String(order.id),
+      correlationID: crypto.randomUUID(), // unique transaction ID required by Woovi
       customer: {
         name: req.user.name,
         email: req.user.email,
@@ -430,15 +432,27 @@ app.post("/api/checkout/woovi", authRequired, async (req, res) => {
       expiresIn: 3600, // 1 hour
     });
 
-    if (!chargeData.data) {
-      throw new Error(chargeData.error || "Erro ao criar cobrança Woovi");
+    // Woovi can return different shapes: { data: {...} } or { charge: {...} }
+    const actualCharge = (chargeData && (chargeData.data || chargeData.charge)) || chargeData;
+
+    if (!actualCharge || (typeof actualCharge !== "object")) {
+      const detail = typeof chargeData === "object" ? JSON.stringify(chargeData) : String(chargeData);
+      throw new Error(detail || "Erro ao criar cobrança Woovi");
     }
 
-    // store woovi charge ID in order metadata (optional: create separate field)
+    // normalize possible fields
+    const normalized = {
+      ...actualCharge,
+      qrCodeUrl: actualCharge.qrCodeUrl || actualCharge.qrCodeImage || actualCharge.paymentLinkUrl || null,
+      brCode: actualCharge.brCode || null,
+      identifier: actualCharge.identifier || actualCharge.transactionID || actualCharge.paymentLinkID || null,
+    };
+
+    // store woovi charge ID in order metadata and mark as pending payment
     await prisma.order.update({
       where: { id: order.id },
       data: {
-        // could add wooviChargeId field to Order model later
+        wooviChargeId: normalized.identifier,
         status: "PENDING_PAYMENT",
       },
     });
@@ -446,8 +460,8 @@ app.post("/api/checkout/woovi", authRequired, async (req, res) => {
     return res.json({
       ok: true,
       order,
-      charge: chargeData.data,
-      qrCode: chargeData.data.brCode || chargeData.data.qrCodeUrl,
+      charge: normalized,
+      qrCode: normalized.brCode || normalized.qrCodeUrl,
     });
   } catch (err) {
     return res.status(500).json({ message: "Erro ao iniciar pagamento Woovi.", detail: err.message });
@@ -460,13 +474,154 @@ app.get("/api/checkout/woovi/:chargeId", authRequired, async (req, res) => {
     const chargeId = req.params.chargeId;
     const chargeData = await wooviRequest(`/charge/${chargeId}`);
 
-    if (!chargeData.data) {
-      return res.status(404).json({ message: "Cobrança não encontrada." });
+    const actualCharge = (chargeData && (chargeData.data || chargeData.charge)) || chargeData;
+    if (!actualCharge) return res.status(404).json({ message: "Cobrança não encontrada." });
+
+    // determine payment status from possible fields
+    const status = actualCharge.status || actualCharge.paymentMethods?.pix?.status || null;
+
+    // try to find related order: prefer Woovi orderId, then woovi identifier
+    let order = null;
+    try {
+      if (actualCharge.orderId) {
+        const oid = Number(actualCharge.orderId);
+        if (Number.isFinite(oid)) {
+          order = await prisma.order.findUnique({ where: { id: oid } });
+        }
+      }
+      if (!order && (actualCharge.identifier || actualCharge.transactionID || actualCharge.paymentLinkID)) {
+        const ident = actualCharge.identifier || actualCharge.transactionID || actualCharge.paymentLinkID;
+        order = await prisma.order.findFirst({ where: { wooviChargeId: ident } });
+      }
+    } catch (e) {
+      // ignore DB lookup errors here
     }
 
-    return res.json({ charge: chargeData.data });
+    // if charge is completed/paid and we found an order, mark it paid and notify
+    const paidStates = ["COMPLETED", "PAID", "SETTLED", "CONFIRMED"];
+    const isPaid = status && paidStates.includes(String(status).toUpperCase());
+    if (isPaid && order && order.status !== "PAID") {
+      const updated = await prisma.order.update({ where: { id: order.id }, data: { status: "PAID" } });
+      try { await notifySale(updated); } catch (e) { /* ignore notify errors */ }
+      order = updated;
+    }
+
+    return res.json({ charge: actualCharge, order: order ?? null });
   } catch (err) {
     return res.status(500).json({ message: "Erro ao verificar cobrança.", detail: err.message });
+  }
+});
+
+// --- CHECKOUT SESSIONS (persistent, secure, expires in 30 min) ---
+
+// Create a new checkout session (protect with auth; only owner can access)
+app.post("/api/checkout", authRequired, async (req, res) => {
+  try {
+    const { items, customerData } = req.body || {};
+    if (!Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ message: "Carrinho vazio." });
+    }
+
+    // clean and validate items
+    const cleanItems = items
+      .map((item) => ({
+        productId: Number(item.productId),
+        qty: Number(item.qty) || 1,
+        title: String(item.title || ""),
+        price: Number(item.price || 0),
+        image: String(item.image || ""),
+      }))
+      .filter((item) => item.productId && item.qty > 0);
+
+    const total = cleanItems.reduce((sum, item) => sum + item.price * item.qty, 0);
+
+    // clean customer data
+    const cleanCustomer = {
+      firstName: String(customerData?.firstName || "").trim(),
+      lastName: String(customerData?.lastName || "").trim(),
+      birthDate: String(customerData?.birthDate || "").trim(),
+      cpf: String(customerData?.cpf || "").trim(),
+      email: req.user.email,
+      name: req.user.name,
+    };
+
+    // create checkout session with 30-minute expiration
+    const expiresAt = new Date(Date.now() + 30 * 60 * 1000);
+    const checkout = await prisma.checkout.create({
+      data: {
+        userId: req.user.id,
+        items: cleanItems,
+        total,
+        customerData: cleanCustomer,
+        expiresAt,
+      },
+    });
+
+    return res.json({
+      ok: true,
+      checkoutId: checkout.id,
+      expiresAt: checkout.expiresAt,
+    });
+  } catch (err) {
+    return res.status(500).json({ message: "Erro ao criar sessão de checkout.", detail: err.message });
+  }
+});
+
+// Get checkout session (only owner can access)
+app.get("/api/checkout/:checkoutId", authRequired, async (req, res) => {
+  try {
+    const checkout = await prisma.checkout.findUnique({
+      where: { id: req.params.checkoutId },
+    });
+
+    if (!checkout) {
+      return res.status(404).json({ message: "Sessão de checkout não encontrada." });
+    }
+
+    // security: only owner or admin can access
+    if (checkout.userId !== req.user.id && req.user.role !== "ADMIN") {
+      return res.status(403).json({ message: "Acesso negado." });
+    }
+
+    // check if expired
+    if (new Date() > new Date(checkout.expiresAt)) {
+      return res.status(410).json({ message: "Sessão de checkout expirou." });
+    }
+
+    return res.json({ ok: true, checkout });
+  } catch (err) {
+    return res.status(500).json({ message: "Erro ao recuperar checkout.", detail: err.message });
+  }
+});
+
+// Update checkout status (after payment)
+app.put("/api/checkout/:checkoutId", authRequired, async (req, res) => {
+  try {
+    const { status, orderId } = req.body || {};
+    const checkout = await prisma.checkout.findUnique({
+      where: { id: req.params.checkoutId },
+    });
+
+    if (!checkout) {
+      return res.status(404).json({ message: "Sessão de checkout não encontrada." });
+    }
+
+    // security: only owner or admin
+    if (checkout.userId !== req.user.id && req.user.role !== "ADMIN") {
+      return res.status(403).json({ message: "Acesso negado." });
+    }
+
+    const updated = await prisma.checkout.update({
+      where: { id: req.params.checkoutId },
+      data: {
+        status: status || checkout.status,
+        orderId: orderId || checkout.orderId,
+      },
+    });
+
+    return res.json({ ok: true, checkout: updated });
+  } catch (err) {
+    return res.status(500).json({ message: "Erro ao atualizar checkout.", detail: err.message });
   }
 });
 

@@ -1,0 +1,677 @@
+/* =====================================================
+   CHECKOUT PAGE - MODERN MULTI-STEP DESIGN
+   ===================================================== */
+
+.checkout-page-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0c11 0%, #1a1d28 100%);
+  color: #fff;
+}
+
+/* =====================================================
+   STEPS INDICATOR
+   ===================================================== */
+
+.checkout-steps {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 40px;
+  margin-bottom: 60px;
+  padding: 0 40px;
+  position: relative;
+}
+
+.checkout-steps::before {
+  position: absolute;
+  top: 20px;
+  left: 60px;
+  right: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, #2f79ff 0%, #2f79ff 66%, rgba(47, 121, 255, 0.2) 100%);
+  content: "";
+  z-index: 0;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.step-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 16px;
+  background: #1a1f2a;
+  color: #6d7a8a;
+  border: 2px solid #2a2d36;
+  transition: all 0.3s ease;
+}
+
+.step-label {
+  font-size: 13px;
+  color: #8a92a1;
+  font-weight: 500;
+  text-align: center;
+  transition: color 0.3s ease;
+}
+
+.step.active .step-number {
+  background: linear-gradient(135deg, #2f79ff 0%, #1e5dd9 100%);
+  color: #fff;
+  border-color: #2f79ff;
+  box-shadow: 0 0 20px rgba(47, 121, 255, 0.3);
+}
+
+.step.active .step-label {
+  color: #2f79ff;
+}
+
+.step.done .step-number {
+  background: rgba(105, 208, 143, 0.2);
+  color: #69d08f;
+  border-color: #69d08f;
+}
+
+.step.done .step-label {
+  color: #69d08f;
+}
+
+/* =====================================================
+   CONTAINER - TWO COLUMNS
+   ===================================================== */
+
+.checkout-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .checkout-container {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .checkout-steps {
+    padding: 0;
+    gap: 20px;
+    flex-direction: row;
+  }
+
+  .checkout-steps::before {
+    left: 20px;
+    right: 20px;
+  }
+}
+
+/* =====================================================
+   LEFT COLUMN - ORDER SUMMARY
+   ===================================================== */
+
+.checkout-summary {
+  background: linear-gradient(135deg, rgba(47, 121, 255, 0.05) 0%, rgba(105, 208, 143, 0.05) 100%);
+  border: 1px solid rgba(47, 121, 255, 0.1);
+  border-radius: 16px;
+  padding: 32px;
+  sticky: true;
+  top: 100px;
+  height: fit-content;
+}
+
+.checkout-summary h2 {
+  font-size: 18px;
+  color: #fff;
+  margin-bottom: 24px;
+  font-weight: 600;
+}
+
+.checkout-items {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.checkout-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  gap: 12px;
+}
+
+.item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.item-title {
+  color: #d3dae6;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.item-qty {
+  color: #8a92a1;
+  font-size: 12px;
+}
+
+.item-price {
+  color: #69d08f;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.checkout-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 8px 0;
+}
+
+.checkout-total {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 16px;
+}
+
+.checkout-total > span:first-child {
+  color: #a1a8b5;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.total-value {
+  color: #2f79ff;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* =====================================================
+   RIGHT COLUMN - FORM CONTAINER
+   ===================================================== */
+
+.checkout-form-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.checkout-step-content {
+  background: rgba(26, 31, 42, 0.6);
+  border: 1px solid rgba(47, 121, 255, 0.15);
+  border-radius: 16px;
+  padding: 40px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.checkout-step-content h2 {
+  font-size: 22px;
+  color: #fff;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.step-description {
+  color: #8a92a1;
+  font-size: 14px;
+  margin-bottom: 32px;
+}
+
+/* =====================================================
+   FORM GROUPS
+   ===================================================== */
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-group label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group span {
+  color: #d3dae6;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.form-group input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(47, 121, 255, 0.2);
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: #fff;
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+.form-group input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #2f79ff;
+  background: rgba(47, 121, 255, 0.05);
+  box-shadow: 0 0 12px rgba(47, 121, 255, 0.2);
+}
+
+.form-group input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =====================================================
+   PAYMENT METHODS
+   ===================================================== */
+
+.payment-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 32px 0;
+}
+
+.payment-method {
+  background: rgba(26, 31, 42, 0.8);
+  border: 2px solid rgba(47, 121, 255, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.payment-method.pix.active {
+  border-color: #2f79ff;
+  background: rgba(47, 121, 255, 0.1);
+}
+
+.method-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.method-name {
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.method-icon {
+  font-size: 20px;
+}
+
+.method-description {
+  color: #8a92a1;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.method-highlight {
+  color: #2f79ff;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* =====================================================
+   PAYMENT CONFIRMATION
+   ===================================================== */
+
+.payment-confirmation {
+  background: rgba(47, 121, 255, 0.05);
+  border: 1px solid rgba(47, 121, 255, 0.15);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 24px 0;
+}
+
+.payment-confirmation h3 {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.confirmation-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  font-size: 13px;
+}
+
+.confirmation-item .label {
+  color: #8a92a1;
+}
+
+.confirmation-item .value {
+  color: #d3dae6;
+  font-weight: 500;
+}
+
+.confirmation-item.highlight {
+  border-top: 1px solid rgba(47, 121, 255, 0.2);
+  padding-top: 12px;
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.confirmation-item.highlight .value {
+  color: #2f79ff;
+  font-weight: 700;
+}
+
+/* =====================================================
+   BUTTONS
+   ===================================================== */
+
+.button-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.site-popup-action {
+  background: linear-gradient(135deg, #2f79ff 0%, #1e5dd9 100%);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  text-align: center;
+}
+
+.site-popup-action:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(47, 121, 255, 0.3);
+}
+
+.site-popup-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.site-popup-action.secondary {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.site-popup-action.secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.checkout-button {
+  grid-column: 1 / -1;
+  margin-top: 20px;
+}
+
+/* =====================================================
+   QR CODE SECTION
+   ===================================================== */
+
+.qr-code-display {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(47, 121, 255, 0.2);
+  border-radius: 12px;
+  padding: 32px;
+  text-align: center;
+  margin: 32px 0;
+}
+
+.qr-code-image {
+  width: 100%;
+  max-width: 280px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.qr-help {
+  color: #8a92a1;
+  font-size: 13px;
+  margin: 0;
+}
+
+.brcode-display {
+  margin: 20px 0;
+}
+
+.brcode-display summary {
+  color: #2f79ff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 12px;
+  transition: color 0.3s ease;
+}
+
+.brcode-display summary:hover {
+  color: #1e5dd9;
+}
+
+.brcode-box {
+  background: rgba(47, 121, 255, 0.05);
+  border: 1px solid rgba(47, 121, 255, 0.2);
+  border-radius: 10px;
+  padding: 16px;
+  margin-top: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.brcode-box code {
+  background: transparent;
+  color: #dae3f0;
+  font-size: 11px;
+  font-family: 'Courier New', monospace;
+  word-break: break-all;
+  flex: 1;
+  padding: 0;
+}
+
+.copy-btn {
+  background: #2f79ff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.copy-btn:hover {
+  background: #1e5dd9;
+}
+
+/* =====================================================
+   PAYMENT STATUS
+   ===================================================== */
+
+.payment-status {
+  background: rgba(105, 208, 143, 0.08);
+  border: 1px solid rgba(105, 208, 143, 0.2);
+  border-radius: 12px;
+  padding: 32px;
+  text-align: center;
+  margin-top: 32px;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.payment-status.waiting {
+  border-color: rgba(47, 121, 255, 0.2);
+  background: rgba(47, 121, 255, 0.05);
+}
+
+.payment-status.paid {
+  border-color: rgba(105, 208, 143, 0.4);
+  background: rgba(105, 208, 143, 0.1);
+}
+
+.payment-status.failed {
+  border-color: rgba(255, 107, 107, 0.3);
+  background: rgba(255, 107, 107, 0.05);
+}
+
+.status-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(47, 121, 255, 0.2);
+  border-top-color: #2f79ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.status-success {
+  color: #69d08f;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.status-error {
+  color: #ff6b6b;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.status-message {
+  color: #8a92a1;
+  font-size: 13px;
+  margin: 0;
+}
+
+/* =====================================================
+   ERROR/SUCCESS SECTIONS
+   ===================================================== */
+
+.checkout-error {
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid rgba(255, 107, 107, 0.3);
+  border-radius: 12px;
+  padding: 16px;
+  color: #ff8a88;
+  font-size: 13px;
+  margin: 16px 0;
+}
+
+.checkout-auth-error,
+.checkout-empty {
+  background: rgba(26, 31, 42, 0.6);
+  border: 1px solid rgba(47, 121, 255, 0.15);
+  border-radius: 16px;
+  padding: 60px 40px;
+  text-align: center;
+}
+
+.checkout-auth-error h2,
+.checkout-empty h2 {
+  color: #fff;
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.checkout-auth-error p,
+.checkout-empty p {
+  color: #8a92a1;
+  font-size: 14px;
+  margin-bottom: 32px;
+}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 768px) {
+  .checkout-page-wrapper {
+    padding: 24px 16px;
+  }
+
+  .checkout-step-content {
+    padding: 24px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .button-group {
+    grid-template-columns: 1fr;
+  }
+
+  .checkout-summary {
+    top: auto;
+    position: static;
+    order: 2;
+  }
+
+  .checkout-form-container {
+    order: 1;
+  }
+
+  .qr-code-image {
+    max-width: 100%;
+  }
+
+  .brcode-box {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .copy-btn {
+    width: 100%;
+  }
+}

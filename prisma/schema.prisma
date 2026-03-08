@@ -29,6 +29,7 @@ model User {
   role         UserRole    @default(USER)
   favorites    Favorite[]
   orders       Order[]
+  checkouts    Checkout[]
   chats        Chat[]
   messages     Message[]
   createdAt    DateTime    @default(now())
@@ -57,6 +58,20 @@ model Order {
   chats     Chat[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Checkout {
+  id            String   @id @default(cuid())
+  userId        Int
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items         Json
+  total         Float
+  customerData  Json     // firstName, lastName, birthDate, cpf, email
+  status        String   @default("PENDING") // PENDING, COMPLETED, EXPIRED
+  orderId       Int?     // após checkout completo, link para Order
+  expiresAt     DateTime
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 // new models to support private chat between store and customer
