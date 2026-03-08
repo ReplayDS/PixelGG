@@ -365,7 +365,7 @@ export function SiteDataProvider({ children }) {
   }
 
   async function toggleFavorite(productId) {
-    if (!authToken) throw new Error("FaÃ§a login para favoritar.");
+    if (!authToken) throw new Error("Faça login para favoritar.");
 
     if (userFavorites.includes(productId)) {
       await request(`/api/auth/me/favorites/${productId}`, { method: "DELETE", token: authToken });
@@ -379,7 +379,7 @@ export function SiteDataProvider({ children }) {
   }
 
   async function checkoutCart() {
-    if (!authToken) throw new Error("FaÃ§a login para concluir a compra.");
+    if (!authToken) throw new Error("Faça login para concluir a compra.");
 
     const items = cartProducts.map((item) => ({
       productId: item.id,

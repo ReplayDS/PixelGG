@@ -1,6 +1,7 @@
+<<<<<<< HEAD
 # PixelGG
 
-Projeto React (Vite) com API Node/Express e persistÃªncia em PostgreSQL via Prisma.
+Projeto React (Vite) com API Node/Express e persistência em PostgreSQL via Prisma.
 
 ## Stack
 
@@ -9,7 +10,7 @@ Projeto React (Vite) com API Node/Express e persistÃªncia em PostgreSQL via Pr
 - ORM: Prisma
 - Banco: PostgreSQL (`pixelgg`)
 
-## VariÃ¡veis de ambiente
+## Variáveis de ambiente
 
 1. Copie `.env.example` para `.env` e ajuste:
 
@@ -59,7 +60,7 @@ npm run db:seed
 npm run start
 ```
 
-Em produÃ§Ã£o, a API serve `dist/` automaticamente (single-service deploy).
+Em produção, a API serve `dist/` automaticamente (single-service deploy).
 
 ## Endpoints
 
@@ -82,3 +83,6 @@ Em produÃ§Ã£o, a API serve `dist/` automaticamente (single-service deploy).
 - `PUT /api/admin/password`
 
 O frontend agora sincroniza automaticamente todos os dados do site com `site-data` no banco.
+=======
+# PixelGG
+>>>>>>> e3de8ad2d87a47910e870c6e683200988d3022ad

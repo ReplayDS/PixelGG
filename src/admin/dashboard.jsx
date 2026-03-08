@@ -126,12 +126,12 @@ const Ico = {
   ),
 };
 
-// ===== MOCK METRICS (simulado Ã¢â‚¬â€ sem backend) =====
+// ===== MOCK METRICS (simulado – sem backend) =====
 const MOCK_SALES = 47;
 const MOCK_REVENUE = "R$ 3.847,30";
 const MOCK_VISITS = "1.203";
 
-// Visitas simuladas por produto (seed estÃƒÂ¡vel)
+// Visitas simuladas por produto (seed estável)
 const MOCK_PRODUCT_VISITS = [342, 287, 241, 198, 176, 154];
 
 function toCurrencyNumber(value) {
@@ -165,7 +165,7 @@ function Switch({ checked, onChange }) {
   );
 }
 
-// ===== STATUS BADGE (clicÃƒÂ¡vel p/ toggle) =====
+// ===== STATUS BADGE (clicável p/ toggle) =====
 function StatusBadge({ active, onClick }) {
   return (
     <span
@@ -178,11 +178,11 @@ function StatusBadge({ active, onClick }) {
   );
 }
 
-// ===== DEFAULTS POR SEÃƒâ€¡ÃƒÆ’O =====
+// ===== DEFAULTS POR SEÇÃO =====
 function getDefault(section) {
   if (section === "hero") return { title: "", tag: "", price: "", desc: "", img: "", thumb: "", productId: "", active: true };
   if (section === "spotlight") return { title: "", type: "BASE GAME", discount: "", oldPrice: "", newPrice: "", platforms: [], image: "", active: true };
-  if (section === "banners") return { title: "", desc: "", image: "", cta: "Ver promoÃƒÂ§ÃƒÂ£o", active: true };
+  if (section === "banners") return { title: "", desc: "", image: "", cta: "Ver promoção", active: true };
   if (section === "ranking") return { title: "", subtitle: "", tag: "", discount: "", oldPrice: "", newPrice: "", image: "", active: true };
   if (section === "category") return { name: "", displayType: "grid", showOnIndex: true, active: true };
   if (section === "product") return { categoryId: "", title: "", image: "", youtubeUrl: "", oldPrice: "", newPrice: "", active: true };
@@ -191,7 +191,7 @@ function getDefault(section) {
   return {};
 }
 
-// ===== FORMULÃƒÂRIOS POR SEÃƒâ€¡ÃƒÆ’O =====
+// ===== FORMULÁRIOS POR SEÇÃO =====
 function HeroForm({ form, onChange, products }) {
   return (
     <div className="adm-form">
@@ -207,7 +207,7 @@ function HeroForm({ form, onChange, products }) {
       </div>
       <div className="adm-form-row">
         <div className="adm-form-group">
-          <label className="adm-label">PreÃƒÂ§o</label>
+          <label className="adm-label">Preço</label>
           <input className="adm-input" value={form.price} onChange={e => onChange("price", e.target.value)} placeholder="Ex: A partir de R$ 49,90" />
         </div>
         <div className="adm-form-group">
@@ -217,7 +217,7 @@ function HeroForm({ form, onChange, products }) {
       </div>
       <div className="adm-form-group full">
         <label className="adm-label">DescriÃƒÂ§ÃƒÂ£o</label>
-        <textarea className="adm-textarea" value={form.desc} onChange={e => onChange("desc", e.target.value)} placeholder="Breve descriÃƒÂ§ÃƒÂ£o do jogo..." />
+        <textarea className="adm-textarea" value={form.desc} onChange={e => onChange("desc", e.target.value)} placeholder="Breve descrição do jogo..." />
       </div>
       <div className="adm-form-group full">
         <label className="adm-label">URL da Imagem Principal (banner)</label>
@@ -243,7 +243,7 @@ function HeroForm({ form, onChange, products }) {
       <div className="adm-toggle-row">
         <div>
           <div className="adm-toggle-label">Ativo no site</div>
-          <div className="adm-toggle-sub">Slide visÃƒÂ­vel na home</div>
+          <div className="adm-toggle-sub">Slide visível na home</div>
         </div>
         <Switch checked={form.active} onChange={v => onChange("active", v)} />
       </div>
@@ -260,7 +260,7 @@ function SpotlightForm({ form, onChange }) {
   return (
     <div className="adm-form">
       <div className="adm-form-group full">
-        <label className="adm-label">TÃƒÂ­tulo do produto</label>
+        <label className="adm-label">Título do produto</label>
         <input className="adm-input" value={form.title} onChange={e => onChange("title", e.target.value)} placeholder="Ex: God of War" />
       </div>
       <div className="adm-form-row">
@@ -301,7 +301,7 @@ function SpotlightForm({ form, onChange }) {
       <div className="adm-toggle-row">
         <div>
           <div className="adm-toggle-label">Ativo no site</div>
-          <div className="adm-toggle-sub">Card visÃƒÂ­vel na seÃƒÂ§ÃƒÂ£o de ofertas</div>
+          <div className="adm-toggle-sub">Card visível na seção de ofertas</div>
         </div>
         <Switch checked={form.active} onChange={v => onChange("active", v)} />
       </div>
@@ -331,7 +331,7 @@ function BannersForm({ form, onChange }) {
       <div className="adm-toggle-row">
         <div>
           <div className="adm-toggle-label">Ativo no site</div>
-          <div className="adm-toggle-sub">Banner visÃƒÂ­vel na seÃƒÂ§ÃƒÂ£o de promoÃƒÂ§ÃƒÂµes</div>
+          <div className="adm-toggle-sub">Banner visível na seção de promoções</div>
         </div>
         <Switch checked={form.active} onChange={v => onChange("active", v)} />
       </div>
@@ -379,7 +379,7 @@ function RankingForm({ form, onChange }) {
       <div className="adm-toggle-row">
         <div>
           <div className="adm-toggle-label">Ativo no site</div>
-          <div className="adm-toggle-sub">Item visÃƒÂ­vel no Top 10</div>
+          <div className="adm-toggle-sub">Item visível no Top 10</div>
         </div>
         <Switch checked={form.active} onChange={v => onChange("active", v)} />
       </div>
@@ -827,11 +827,11 @@ export default function PixelGGAdminPanel() {
   }, [userAccount]);
 
   const navItems = [
-    { key: "dashboard", label: "VisÃ£o geral", Icon: Ico.Dashboard },
-    { key: "conteudo", label: "Conteudo", Icon: Ico.Content },
+    { key: "dashboard", label: "Visão geral", Icon: Ico.Dashboard },
+    { key: "conteudo", label: "Conteúdo", Icon: Ico.Content },
     { key: "produtos", label: "Produtos", Icon: Ico.Package },
     { key: "organize", label: "Organizar", Icon: Ico.Organize },
-    { key: "settings", label: "ConfiguraÃ§Ãµes", Icon: Ico.Settings },
+    { key: "settings", label: "Configurações", Icon: Ico.Settings },
   ];
 
   const contentTabs = [
@@ -1174,14 +1174,14 @@ export default function PixelGGAdminPanel() {
             {contentTab === "banners" && (
               <SectionTable
                 title="Banners promocionais"
-                description="Controle os banners da seÃƒÂ§ÃƒÂ£o de promoÃƒÂ§ÃƒÂµes."
+                description="Controle os banners da seção de promoções."
                 rows={filteredBanners}
                 onAdd={() => setModal({ section: "banners", item: null })}
                 onEdit={item => setModal({ section: "banners", item })}
                 onDelete={id => handleDelete("banners", id)}
                 columns={[
                   { key: "title", label: "TÃƒÂ­tulo" },
-                  { key: "desc", label: "DescriÃƒÂ§ÃƒÂ£o", render: val => <span title={val}>{val?.substring(0, 40)}{val?.length > 40 ? "Ã¢â‚¬Â¦" : ""}</span> },
+                  { key: "desc", label: "Descrição", render: val => <span title={val}>{val?.substring(0, 40)}{val?.length > 40 ? "…" : ""}</span> },
                   { key: "cta", label: "CTA" },
                   {
                     key: "active", label: "Status",
@@ -1248,7 +1248,7 @@ export default function PixelGGAdminPanel() {
               <div className="adm-organize-grid" style={{ gridTemplateColumns: "1.15fr 0.85fr" }}>
                 <SectionTable
                   title="Categorias de produtos"
-                  description="Crie categorias e configure exibicao no index."
+                  description="Crie categorias e configure exibição no index."
                   rows={filteredCategories}
                   onAdd={() => setModal({ section: "category", item: null })}
                   onEdit={item => setModal({ section: "category", item })}
@@ -1297,7 +1297,7 @@ export default function PixelGGAdminPanel() {
             {productTab === "produtos" && (
               <SectionTable
                 title="Produtos"
-                description="Cadastro de produtos com calculo automatico de desconto."
+                description="Cadastro de produtos com cálculo automático de desconto."
                 rows={filteredProducts}
                 onAdd={() => setModal({ section: "product", item: null })}
                 onEdit={item => setModal({ section: "product", item })}
@@ -1416,7 +1416,7 @@ export default function PixelGGAdminPanel() {
               <div className="adm-organize-grid">
                 <SectionTable
                   title="Jogos de recarga"
-                  description="Selecione os jogos exibidos na section de recargas."
+                  description="Selecione os jogos exibidos na seção de recargas."
                   rows={filteredRechargeGames}
                   onAdd={() => setModal({ section: "rechargeGame", item: null })}
                   onEdit={item => setModal({ section: "rechargeGame", item })}

@@ -35,7 +35,6 @@ export default function SiteHeader() {
 
   const [openPopup, setOpenPopup] = useState(null);
   const [authMode, setAuthMode] = useState("login");
-  const [userTab, setUserTab] = useState("perfil");
   const [authError, setAuthError] = useState("");
   const [actionMsg, setActionMsg] = useState("");
 
@@ -61,16 +60,13 @@ export default function SiteHeader() {
   const cartCount = cartProducts.reduce((sum, item) => sum + item.qty, 0);
 
   async function handleCheckout() {
-    try {
-      setActionMsg("");
-      await checkoutCart();
-      setActionMsg("Compra concluida com sucesso.");
-      setUserTab("compras");
+    if (!userAccount.loggedIn) {
+      setActionMsg("Por favor, faça login para continuar.");
       setOpenPopup("user");
-    } catch (error) {
-      setActionMsg(error.message);
-      setOpenPopup("user");
+      return;
     }
+    window.location.hash = "#checkout";
+    setOpenPopup(null);
   }
 
   async function handleLogin(e) {
@@ -214,64 +210,22 @@ export default function SiteHeader() {
             {!authLoading && userAccount.loggedIn && (
               <>
                 <div className="site-user-name">{userAccount.name}</div>
-                <div className="site-user-mail">@{userAccount.username} â€¢ {userAccount.email}</div>
+                <div className="site-user-mail">@{userAccount.username} • {userAccount.email}</div>
                 <div className={`site-user-status ${userAccount.role === "ADMIN" ? "admin" : "on"}`}>
-                  {userAccount.role === "ADMIN" ? "Administrador" : "Usuario"}
+                  {userAccount.role === "ADMIN" ? "Administrador" : "Usuário"}
                 </div>
 
                 <div className="site-user-nav">
-                  <button className={userTab === "perfil" ? "active" : ""} onClick={() => setUserTab("perfil")}>Editar Perfil</button>
-                  <button className={userTab === "compras" ? "active" : ""} onClick={() => setUserTab("compras")}>Produtos adquiridos</button>
-                  <button className={userTab === "favoritos" ? "active" : ""} onClick={() => setUserTab("favoritos")}>Favoritos</button>
+                  <button onClick={() => { window.location.hash = "#perfil"; setOpenPopup(null); }}>Editar Perfil</button>
+                  <button onClick={() => { window.location.hash = "#pedidos"; setOpenPopup(null); }}>Meus pedidos</button>
+                  <button onClick={() => { window.location.hash = "#favoritos"; setOpenPopup(null); }}>Favoritos</button>
                 </div>
 
-                {userTab === "perfil" && (
-                  <>
-                    <form className="site-form" onSubmit={handleProfileSave}>
-                      <input placeholder="Nome" value={profileForm.name} onChange={(e) => setProfileForm((s) => ({ ...s, name: e.target.value }))} />
-                      <input placeholder="Usuario" value={profileForm.username} onChange={(e) => setProfileForm((s) => ({ ...s, username: e.target.value }))} />
-                      <input placeholder="Email" value={profileForm.email} onChange={(e) => setProfileForm((s) => ({ ...s, email: e.target.value }))} />
-                      <input placeholder="URL avatar" value={profileForm.avatar} onChange={(e) => setProfileForm((s) => ({ ...s, avatar: e.target.value }))} />
-                      <button className="site-popup-action" type="submit">Salvar perfil</button>
-                    </form>
-                    <form className="site-form" onSubmit={handleChangePassword}>
-                      <input type="password" placeholder="Senha atual" value={passwordForm.currentPassword} onChange={(e) => setPasswordForm((s) => ({ ...s, currentPassword: e.target.value }))} />
-                      <input type="password" placeholder="Nova senha" value={passwordForm.newPassword} onChange={(e) => setPasswordForm((s) => ({ ...s, newPassword: e.target.value }))} />
-                      <button className="site-popup-ghost" type="submit">Alterar senha</button>
-                    </form>
-                  </>
-                )}
-
-                {userTab === "favoritos" && (
-                  <div className="site-list">
-                    {favoriteProducts.length === 0 && <div className="site-popup-empty">Nenhum favorito.</div>}
-                    {favoriteProducts.map((item) => (
-                      <div className="site-mini-item" key={item.id}>
-                        <img src={item.image} alt={item.title} />
-                        <div>
-                          <div>{item.title}</div>
-                          <small>{formatBRL(item.newPrice)}</small>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {userTab === "compras" && (
-                  <div className="site-list">
-                    {userOrders.length === 0 && <div className="site-popup-empty">Nenhuma compra ainda.</div>}
-                    {userOrders.map((order) => (
-                      <div className="site-order-item" key={order.id}>
-                        <div>Pedido #{order.id}</div>
-                        <small>{formatDate(order.createdAt)} â€¢ {formatBRL(order.total)}</small>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                {/* conteúdos agora estão em páginas separadas, o popup se limita a links e logout */}
 
                 <button className="site-popup-danger" onClick={logoutUser}>Sair</button>
                 {userAccount.role === "ADMIN" && (
-                  <button className="site-popup-ghost" onClick={() => { window.location.hash = "#admin"; }}>
+                  <button className="site-popup-ghost" onClick={() => { window.location.hash = "#admin"; setOpenPopup(null); }}>
                     Abrir painel admin
                   </button>
                 )}

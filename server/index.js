@@ -12,6 +12,28 @@ const port = Number(process.env.PORT || 4000);
 const corsOrigin = process.env.CORS_ORIGIN || "http://localhost:5173";
 const jwtSecret = process.env.JWT_SECRET || "pixelgg-dev-secret";
 
+// --- woovi integration helpers ---
+const WOOVI_APP_ID = process.env.WOOVI_APP_ID || ""; // create API key in Woovi dashboard
+const WOOVI_API_BASE = "https://api.woovi.com/api/v1";
+
+async function wooviRequest(path, { method = "GET", body } = {}) {
+  if (!WOOVI_APP_ID) throw new Error("WOOVI_APP_ID not configured");
+  const res = await fetch(`${WOOVI_API_BASE}${path}`, {
+    method,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: WOOVI_APP_ID,
+    },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  return res.json();
+}
+
+async function createWooviCharge(payload) {
+  return wooviRequest("/charge", { method: "POST", body: payload });
+}
+
+
 if (!process.env.DATABASE_URL) {
   // eslint-disable-next-line no-console
   console.error("DATABASE_URL nao configurada. Crie o arquivo .env antes de iniciar a API.");
@@ -286,6 +308,28 @@ app.get("/api/auth/me/orders", authRequired, async (req, res) => {
   return res.json({ orders });
 });
 
+
+// helper for sending a simple notification to the configured webhook (Discord in our case)
+const DISCORD_WEBHOOK = process.env.DISCORD_WEBHOOK_URL ||
+  "https://discord.com/api/webhooks/1479296645043589373/i57L5erXha84_lfZlyYyMtXDQ2MzF5TDn5oWoBu0Zoy4pabF1AqC2MYu8nSdu1y3f_xa";
+
+async function notifySale(order) {
+  if (!DISCORD_WEBHOOK) return;
+  try {
+    const content = `Venda confirmada 💸\nPedido #${order.id}\nUsuário: ${order.userId}\nValor: R$ ${order.total.toFixed(2)}\nProdutos: ${order.items
+      .map((i) => `${i.title} x${i.qty}`)
+      .join(", ")}`;
+    await fetch(DISCORD_WEBHOOK, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content }),
+    });
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error("Failed to send webhook", e);
+  }
+}
+
 app.post("/api/orders/checkout", authRequired, async (req, res) => {
   try {
     const { items } = req.body || {};
@@ -314,11 +358,152 @@ app.post("/api/orders/checkout", authRequired, async (req, res) => {
       },
     });
 
+    // trigger webhook notification (fire and forget)
+    notifySale(order);
+
     return res.json({ ok: true, order });
   } catch (error) {
     return res.status(500).json({ message: "Erro ao concluir compra.", detail: error.message });
   }
 });
+
+
+// --- additional endpoints ---
+
+// send a dummy notification to the webhook for manual testing
+app.post("/api/orders/test-webhook", authRequired, async (req, res) => {
+  try {
+    const dummy = {
+      id: 0,
+      userId: req.user.id,
+      total: 123.45,
+      items: [
+        { productId: 999, title: "Test product", qty: 1, price: 123.45 },
+      ],
+    };
+    await notifySale(dummy);
+    return res.json({ ok: true });
+  } catch (err) {
+    return res.status(500).json({ message: "Erro ao enviar webhook de teste.", detail: err.message });
+  }
+});
+
+// --- WOOVI INTEGRATION ---
+app.post("/api/checkout/woovi", authRequired, async (req, res) => {
+  try {
+    const { items } = req.body || {};
+    if (!Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ message: "Carrinho vazio." });
+    }
+
+    const cleanItems = items
+      .map((item) => ({
+        productId: Number(item.productId),
+        qty: Number(item.qty) || 1,
+        title: String(item.title || ""),
+        price: Number(item.price || 0),
+        image: String(item.image || ""),
+      }))
+      .filter((item) => item.productId && item.qty > 0);
+
+    const total = cleanItems.reduce((sum, item) => sum + item.price * item.qty, 0);
+
+    // create order in PENDING status
+    const order = await prisma.order.create({
+      data: {
+        userId: req.user.id,
+        total,
+        status: "PENDING",
+        items: cleanItems,
+      },
+    });
+
+    // call Woovi API to create charge
+    const chargeData = await createWooviCharge({
+      value: Math.round(total * 100), // in cents
+      description: `Pedido #${order.id} - PixelGG`,
+      orderId: String(order.id),
+      customer: {
+        name: req.user.name,
+        email: req.user.email,
+      },
+      expiresIn: 3600, // 1 hour
+    });
+
+    if (!chargeData.data) {
+      throw new Error(chargeData.error || "Erro ao criar cobrança Woovi");
+    }
+
+    // store woovi charge ID in order metadata (optional: create separate field)
+    await prisma.order.update({
+      where: { id: order.id },
+      data: {
+        // could add wooviChargeId field to Order model later
+        status: "PENDING_PAYMENT",
+      },
+    });
+
+    return res.json({
+      ok: true,
+      order,
+      charge: chargeData.data,
+      qrCode: chargeData.data.brCode || chargeData.data.qrCodeUrl,
+    });
+  } catch (err) {
+    return res.status(500).json({ message: "Erro ao iniciar pagamento Woovi.", detail: err.message });
+  }
+});
+
+// check charge status
+app.get("/api/checkout/woovi/:chargeId", authRequired, async (req, res) => {
+  try {
+    const chargeId = req.params.chargeId;
+    const chargeData = await wooviRequest(`/charge/${chargeId}`);
+
+    if (!chargeData.data) {
+      return res.status(404).json({ message: "Cobrança não encontrada." });
+    }
+
+    return res.json({ charge: chargeData.data });
+  } catch (err) {
+    return res.status(500).json({ message: "Erro ao verificar cobrança.", detail: err.message });
+  }
+});
+
+// simple chat infrastructure tied to an order; new models must be added to Prisma schema
+app.get("/api/orders/:orderId/chat", authRequired, async (req, res) => {
+  try {
+    const orderId = Number(req.params.orderId);
+    const chat = await prisma.chat.findFirst({
+      where: { orderId, userId: req.user.id },
+    });
+    if (!chat) return res.json({ messages: [] });
+    const messages = await prisma.message.findMany({
+      where: { chatId: chat.id },
+      orderBy: { createdAt: "asc" },
+    });
+    return res.json({ messages });
+  } catch (err) {
+    return res.status(500).json({ message: "Erro ao ler conversas.", detail: err.message });
+  }
+});
+
+app.post("/api/orders/:orderId/chat", authRequired, async (req, res) => {
+  try {
+    const orderId = Number(req.params.orderId);
+    const { text } = req.body || {};
+    if (!text) return res.status(400).json({ message: "Mensagem vazia." });
+    let chat = await prisma.chat.findFirst({ where: { orderId, userId: req.user.id } });
+    if (!chat) {
+      chat = await prisma.chat.create({ data: { orderId, userId: req.user.id } });
+    }
+    const msg = await prisma.message.create({ data: { chatId: chat.id, senderId: req.user.id, text } });
+    return res.json({ message: msg });
+  } catch (err) {
+    return res.status(500).json({ message: "Erro ao enviar mensagem.", detail: err.message });
+  }
+});
+
 
 app.post("/api/auth/admin/login", async (req, res) => {
   try {

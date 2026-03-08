@@ -29,6 +29,8 @@ model User {
   role         UserRole    @default(USER)
   favorites    Favorite[]
   orders       Order[]
+  chats        Chat[]
+  messages     Message[]
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
 }
@@ -47,9 +49,34 @@ model Order {
   id        Int      @id @default(autoincrement())
   userId    Int
   total     Float
-  status    String   @default("PAID")
+  status    String   @default("PENDING")
   items     Json
+  paymentMethod String?
+  wooviChargeId String?
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chats     Chat[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// new models to support private chat between store and customer
+model Chat {
+  id        Int       @id @default(autoincrement())
+  order     Order?    @relation(fields: [orderId], references: [id])
+  orderId   Int?
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int
+  messages  Message[]
+  createdAt DateTime  @default(now())
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  chatId    Int
+  sender    User?    @relation(fields: [senderId], references: [id])
+  senderId  Int?
+  text      String
   createdAt DateTime @default(now())
 }
 
