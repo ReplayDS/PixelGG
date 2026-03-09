@@ -114,6 +114,13 @@ export function SiteDataProvider({ children }) {
   const [cartItems, setCartItems] = useState(defaults.cartItems);
   const [rechargeGames, setRechargeGames] = useState(defaults.rechargeGames);
   const [rechargeOptions, setRechargeOptions] = useState(defaults.rechargeOptions);
+  const [sectionsOrder, setSectionsOrder] = useState(defaults.sectionsOrder || [
+    { id: "hero", label: "Hero", order: 1 },
+    { id: "categories", label: "Categorias", order: 2 },
+    { id: "topPixel", label: "Top Pixel", order: 3 },
+    { id: "recharges", label: "Recargas", order: 4 },
+    { id: "banners", label: "Banners", order: 5 },
+  ]);
 
   const [isRemoteReady, setIsRemoteReady] = useState(false);
   const [authToken, setAuthToken] = useState(() => getStoredToken());

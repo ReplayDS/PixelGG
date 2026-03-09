@@ -432,6 +432,9 @@ app.post("/api/checkout/woovi", authRequired, async (req, res) => {
       expiresIn: 3600, // 1 hour
     });
 
+    // Log raw response for debugging
+    console.log(`[Woovi] Raw response: ${JSON.stringify(chargeData)}`);
+
     // Woovi can return different shapes: { data: {...} } or { charge: {...} }
     const actualCharge = (chargeData && (chargeData.data || chargeData.charge)) || chargeData;
 
@@ -443,10 +446,15 @@ app.post("/api/checkout/woovi", authRequired, async (req, res) => {
     // normalize possible fields
     const normalized = {
       ...actualCharge,
+      id: actualCharge.id || actualCharge.paymentLinkID || actualCharge.transactionID || actualCharge.identifier,
       qrCodeUrl: actualCharge.qrCodeUrl || actualCharge.qrCodeImage || actualCharge.paymentLinkUrl || null,
       brCode: actualCharge.brCode || null,
       identifier: actualCharge.identifier || actualCharge.transactionID || actualCharge.paymentLinkID || null,
     };
+
+    // Log para debug
+    console.log(`[Woovi] Normalized: ${JSON.stringify(normalized)}`);
+    console.log(`[Woovi] Order #${order.id}: chargeId=${normalized.id}, identifier=${normalized.identifier}`);
 
     // store woovi charge ID in order metadata and mark as pending payment
     await prisma.order.update({
@@ -472,6 +480,8 @@ app.post("/api/checkout/woovi", authRequired, async (req, res) => {
 app.get("/api/checkout/woovi/:chargeId", authRequired, async (req, res) => {
   try {
     const chargeId = req.params.chargeId;
+    console.log(`[Woovi] Checking charge: ${chargeId}`);
+    
     const chargeData = await wooviRequest(`/charge/${chargeId}`);
 
     const actualCharge = (chargeData && (chargeData.data || chargeData.charge)) || chargeData;
@@ -479,6 +489,7 @@ app.get("/api/checkout/woovi/:chargeId", authRequired, async (req, res) => {
 
     // determine payment status from possible fields
     const status = actualCharge.status || actualCharge.paymentMethods?.pix?.status || null;
+    console.log(`[Woovi] Charge ${chargeId} status: ${status}`);
 
     // try to find related order: prefer Woovi orderId, then woovi identifier
     let order = null;
@@ -501,8 +512,9 @@ app.get("/api/checkout/woovi/:chargeId", authRequired, async (req, res) => {
     const paidStates = ["COMPLETED", "PAID", "SETTLED", "CONFIRMED"];
     const isPaid = status && paidStates.includes(String(status).toUpperCase());
     if (isPaid && order && order.status !== "PAID") {
+      console.log(`[Woovi] Marking order #${order.id} as PAID`);
       const updated = await prisma.order.update({ where: { id: order.id }, data: { status: "PAID" } });
-      try { await notifySale(updated); } catch (e) { /* ignore notify errors */ }
+      try { await notifySale(updated); } catch (e) { console.error("[Woovi] Notify error:", e.message); }
       order = updated;
     }
 

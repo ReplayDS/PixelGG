@@ -197,7 +197,7 @@ function HeroForm({ form, onChange, products }) {
     <div className="adm-form">
       <div className="adm-form-row">
         <div className="adm-form-group">
-          <label className="adm-label">TÃƒÂ­tulo</label>
+          <label className="adm-label">Título</label>
           <input className="adm-input" value={form.title} onChange={e => onChange("title", e.target.value)} placeholder="Ex: Hogwarts Legacy" />
         </div>
         <div className="adm-form-group">
@@ -216,7 +216,7 @@ function HeroForm({ form, onChange, products }) {
         </div>
       </div>
       <div className="adm-form-group full">
-        <label className="adm-label">DescriÃƒÂ§ÃƒÂ£o</label>
+        <label className="adm-label">Descrição</label>
         <textarea className="adm-textarea" value={form.desc} onChange={e => onChange("desc", e.target.value)} placeholder="Breve descrição do jogo..." />
       </div>
       <div className="adm-form-group full">
@@ -275,11 +275,11 @@ function SpotlightForm({ form, onChange }) {
       </div>
       <div className="adm-form-row">
         <div className="adm-form-group">
-          <label className="adm-label">PreÃƒÂ§o original</label>
+          <label className="adm-label">Preço original</label>
           <input className="adm-input" value={form.oldPrice} onChange={e => onChange("oldPrice", e.target.value)} placeholder="R$ 199,90" />
         </div>
         <div className="adm-form-group">
-          <label className="adm-label">PreÃƒÂ§o com desconto</label>
+          <label className="adm-label">Preço com desconto</label>
           <input className="adm-input" value={form.newPrice} onChange={e => onChange("newPrice", e.target.value)} placeholder="R$ 99,90" />
         </div>
       </div>
@@ -313,20 +313,20 @@ function BannersForm({ form, onChange }) {
   return (
     <div className="adm-form">
       <div className="adm-form-group full">
-        <label className="adm-label">TÃƒÂ­tulo do banner</label>
-        <input className="adm-input" value={form.title} onChange={e => onChange("title", e.target.value)} placeholder="Ex: PromoÃƒÂ§ÃƒÂ£o de Inverno" />
+        <label className="adm-label">Título do banner</label>
+        <input className="adm-input" value={form.title} onChange={e => onChange("title", e.target.value)} placeholder="Ex: Promoção de Inverno" />
       </div>
       <div className="adm-form-group full">
-        <label className="adm-label">DescriÃƒÂ§ÃƒÂ£o</label>
-        <textarea className="adm-textarea" value={form.desc} onChange={e => onChange("desc", e.target.value)} placeholder="Texto exibido abaixo do tÃƒÂ­tulo..." />
+        <label className="adm-label">Descrição</label>
+        <textarea className="adm-textarea" value={form.desc} onChange={e => onChange("desc", e.target.value)} placeholder="Texto exibido abaixo do título..." />
       </div>
       <div className="adm-form-group full">
         <label className="adm-label">URL da imagem</label>
         <input className="adm-input" value={form.image} onChange={e => onChange("image", e.target.value)} placeholder="https://..." />
       </div>
       <div className="adm-form-group full">
-        <label className="adm-label">Texto do botÃƒÂ£o (CTA)</label>
-        <input className="adm-input" value={form.cta} onChange={e => onChange("cta", e.target.value)} placeholder="Ver promoÃƒÂ§ÃƒÂ£o" />
+        <label className="adm-label">Texto do botão (CTA)</label>
+        <input className="adm-input" value={form.cta} onChange={e => onChange("cta", e.target.value)} placeholder="Ver promoção" />
       </div>
       <div className="adm-toggle-row">
         <div>
@@ -344,7 +344,7 @@ function RankingForm({ form, onChange }) {
     <div className="adm-form">
       <div className="adm-form-row">
         <div className="adm-form-group">
-          <label className="adm-label">TÃƒÂ­tulo</label>
+          <label className="adm-label">Título</label>
           <input className="adm-input" value={form.title} onChange={e => onChange("title", e.target.value)} placeholder="Ex: Elden Ring" />
         </div>
         <div className="adm-form-group">
@@ -353,7 +353,7 @@ function RankingForm({ form, onChange }) {
         </div>
       </div>
       <div className="adm-form-group full">
-        <label className="adm-label">SubtÃƒÂ­tulo</label>
+        <label className="adm-label">Subtítulo</label>
         <input className="adm-input" value={form.subtitle} onChange={e => onChange("subtitle", e.target.value)} placeholder="Ex: Muito procurado" />
       </div>
       <div className="adm-form-row">
@@ -362,13 +362,13 @@ function RankingForm({ form, onChange }) {
           <input className="adm-input" value={form.discount} onChange={e => onChange("discount", e.target.value)} placeholder="-30%" />
         </div>
         <div className="adm-form-group">
-          <label className="adm-label">PreÃƒÂ§o original</label>
+          <label className="adm-label">Preço original</label>
           <input className="adm-input" value={form.oldPrice} onChange={e => onChange("oldPrice", e.target.value)} placeholder="R$ 199,90" />
         </div>
       </div>
       <div className="adm-form-row">
         <div className="adm-form-group">
-          <label className="adm-label">PreÃƒÂ§o com desconto</label>
+          <label className="adm-label">Preço com desconto</label>
           <input className="adm-input" value={form.newPrice} onChange={e => onChange("newPrice", e.target.value)} placeholder="R$ 139,90" />
         </div>
         <div className="adm-form-group">
@@ -564,7 +564,7 @@ function RechargeOptionForm({ form, onChange, rechargeGames }) {
       <div className="adm-toggle-row">
         <div>
           <div className="adm-toggle-label">Ativo</div>
-          <div className="adm-toggle-sub">DisponÃƒÂ­vel para o slider do usuÃƒÂ¡rio</div>
+          <div className="adm-toggle-sub">Disponível para o slider do usuário</div>
         </div>
         <Switch checked={!!form.active} onChange={v => onChange("active", v)} />
       </div>
@@ -572,7 +572,7 @@ function RechargeOptionForm({ form, onChange, rechargeGames }) {
   );
 }
 
-// ===== MODAL DE EDIÃƒâ€¡ÃƒÆ’O / CRIAÃƒâ€¡ÃƒÆ’O =====
+// ===== MODAL DE EDIÇÃO / CRIAÇÃO =====
 function EditModal({ item, section, onSave, onClose, categories = [], products = [], rechargeGames = [] }) {
   const isNew = !item;
   const [form, setForm] = useState(item ? { ...item } : getDefault(section));
@@ -600,7 +600,7 @@ function EditModal({ item, section, onSave, onClose, categories = [], products =
           <button className="adm-btn-icon" onClick={onClose}><Ico.X /></button>
         </div>
         <p className="adm-modal-sub">
-          {isNew ? "Preencha os dados para adicionar ao site." : "Edite as informaÃ§Ãµes e salve para atualizar o site."}
+          {isNew ? "Preencha os dados para adicionar ao site." : "Edite as informações e salve para atualizar o site."}
         </p>
 
         {section === "hero" && <HeroForm form={form} onChange={handleChange} products={products} />}
@@ -615,7 +615,7 @@ function EditModal({ item, section, onSave, onClose, categories = [], products =
         <div className="adm-modal-actions">
           <button className="adm-btn adm-btn-secondary" onClick={onClose}>Cancelar</button>
           <button className="adm-btn adm-btn-primary" onClick={() => onSave(form)}>
-            {isNew ? "Adicionar" : "Salvar alteraÃ§Ãµes"}
+            {isNew ? "Adicionar" : "Salvar alterações"}
           </button>
         </div>
       </div>
@@ -692,7 +692,7 @@ function OrganizeCard({ title, icon: Icon, children }) {
       </div>
       <div style={{ padding: "0 16px 16px" }}>
         <div className="adm-drag-hint">
-          <Ico.Grip s={12} /> Segure e arraste um item para mudar sua posiÃƒÂ§ÃƒÂ£o
+          <Ico.Grip s={12} /> Segure e arraste um item para mudar sua posição
         </div>
         {children}
       </div>
@@ -700,7 +700,7 @@ function OrganizeCard({ title, icon: Icon, children }) {
   );
 }
 
-// ===== TABELA GENÃƒâ€°RICA =====
+// ===== TABELA GENÉRICA =====
 function SectionTable({ title, description, rows, columns, onAdd, onEdit, onDelete }) {
   return (
     <div className="adm-card">
@@ -723,7 +723,7 @@ function SectionTable({ title, description, rows, columns, onAdd, onEdit, onDele
             <thead>
               <tr>
                 {columns.map(col => <th key={col.key}>{col.label}</th>)}
-                <th>AÃƒÂ§ÃƒÂµes</th>
+                <th>Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -1067,7 +1067,7 @@ export default function PixelGGAdminPanel() {
         <div className="adm-topbar">
           <div className="adm-topbar-info">
             <p>Painel Admin PixelGG</p>
-            <h2>Gerencie as seÃ§Ãµes da PixelGG</h2>
+            <h2>Gerencie as seções da PixelGG</h2>
           </div>
           <div className="adm-topbar-actions">
             <div className="adm-search-wrap">
@@ -1090,7 +1090,7 @@ export default function PixelGGAdminPanel() {
               <MetricCard
                 title="Vendas do dia"
                 value={MOCK_SALES}
-                hint="Pedidos concluÃƒÂ­dos hoje"
+                hint="Pedidos concluídos hoje"
                 icon={Ico.TrendingUp}
                 accent="#6366f1"
               />
@@ -1104,7 +1104,7 @@ export default function PixelGGAdminPanel() {
               <MetricCard
                 title="Visitas no dia"
                 value={MOCK_VISITS}
-                hint="SessÃƒÂµes ÃƒÂºnicas hoje"
+                hint="Sessões únicas hoje"
                 icon={Ico.Eye}
                 accent="#f59e0b"
               />
@@ -1114,7 +1114,7 @@ export default function PixelGGAdminPanel() {
             <div className="adm-card" style={{ padding: "20px 22px" }}>
               <div className="adm-card-title" style={{ marginBottom: 4 }}>Produtos mais acessados hoje</div>
               <div className="adm-card-desc" style={{ marginBottom: 18 }}>
-                NÃƒÂºmero de visitas exibido no canto de cada card
+                Número de visitas exibido no canto de cada card
               </div>
               <div className="adm-visited-grid">
                 {mostVisited.map((product, i) => (
@@ -1152,7 +1152,7 @@ export default function PixelGGAdminPanel() {
 
             {contentTab === "hero" && (
               <SectionTable
-                title="GestÃƒÂ£o do Hero"
+                title="Gestão do Hero"
                 description="Edite os slides do banner principal do topo."
                 rows={filteredHero}
                 onAdd={() => setModal({ section: "hero", item: null })}
@@ -1162,7 +1162,7 @@ export default function PixelGGAdminPanel() {
                   { key: "order", label: "#" },
                   { key: "title", label: "TÃƒÂ­tulo" },
                   { key: "tag", label: "Tag" },
-                  { key: "price", label: "PreÃƒÂ§o" },
+                  { key: "price", label: "Preço" },
                   {
                     key: "active", label: "Status",
                     render: (val, row) => <StatusBadge active={val} onClick={() => handleToggle("hero", row.id, val)} />,
@@ -1203,7 +1203,7 @@ export default function PixelGGAdminPanel() {
                   { key: "rank", label: "#" },
                   { key: "title", label: "TÃƒÂ­tulo" },
                   { key: "tag", label: "Badge" },
-                  { key: "newPrice", label: "PreÃƒÂ§o" },
+                  { key: "newPrice", label: "Preço" },
                   {
                     key: "active", label: "Status",
                     render: (val, row) => <StatusBadge active={val} onClick={() => handleToggle("ranking", row.id, val)} />,
@@ -1601,8 +1601,8 @@ export default function PixelGGAdminPanel() {
             </div>
 
             <div className="adm-card" style={{ padding: "22px" }}>
-              <div className="adm-card-title" style={{ marginBottom: 6 }}>Configuracoes do Hero</div>
-              <div className="adm-card-desc" style={{ marginBottom: 20 }}>Controles de autoplay e tempo de transicao.</div>
+              <div className="adm-card-title" style={{ marginBottom: 6 }}>Configurações do Hero</div>
+              <div className="adm-card-desc" style={{ marginBottom: 20 }}>Controles de autoplay e tempo de transição.</div>
 
               <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
                 <div className="adm-toggle-row">

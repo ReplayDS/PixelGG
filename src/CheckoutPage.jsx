@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSiteData } from "./SiteDataContext";
 import SiteHeader from "./SiteHeader";
 import "./checkout-page.css";
@@ -34,6 +34,18 @@ export default function CheckoutPage() {
   const [chargeData, setChargeData] = useState(null);
   const [orderId, setOrderId] = useState(null);
   const [orderStatus, setOrderStatus] = useState("pending"); // pending, waiting, paid, failed
+  
+  // track polling interval to clean up on unmount
+  const pollingRef = useRef(null);
+  
+  // cleanup polling on unmount
+  useEffect(() => {
+    return () => {
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+      }
+    };
+  }, []);
   
   // initialize checkout on mount
   useEffect(() => {
@@ -146,13 +158,24 @@ export default function CheckoutPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || data.message || "Erro ao processar pagamento");
 
+      console.log("[Checkout] Full response:", JSON.stringify(data, null, 2));
+      console.log("[Checkout] data.charge exists?", !!data.charge);
+      console.log("[Checkout] data.charge.id =", data?.charge?.id || "UNDEFINED");
+      
       setChargeData(data.charge);
       setOrderId(data.order.id);
       setCurrentStep("confirmation");
       setOrderStatus("waiting");
       
+      console.log("[Checkout] After setState - chargeData=", data.charge?.id);
+      
       // poll for payment confirmation
-      pollPaymentStatus(data.charge.id);
+      const chargeToUse = data.charge?.id;
+      console.log("[Checkout] About to call pollPaymentStatus with:", chargeToUse);
+      if (!chargeToUse) {
+        throw new Error("chargeId não recebido na resposta");
+      }
+      pollPaymentStatus(chargeToUse);
     } catch (err) {
       setError(err.message);
       setOrderStatus("failed");
@@ -162,7 +185,16 @@ export default function CheckoutPage() {
   }
 
   async function pollPaymentStatus(chargeId) {
+    // Clean up any existing polling
+    if (pollingRef.current) {
+      clearInterval(pollingRef.current);
+    }
+    
+    let maxAttempts = 0;
+    const maxPolls = (30 * 60 * 1000) / 3000; // 30 minutes worth of polls
+    
     const interval = setInterval(async () => {
+      maxAttempts++;
       try {
         const res = await fetch(`/api/checkout/woovi/${chargeId}`, {
           headers: { Authorization: `Bearer ${authToken}` },
@@ -170,22 +202,32 @@ export default function CheckoutPage() {
         const data = await res.json();
         const status = data.charge?.status;
 
+        console.log(`[Polling] chargeId=${chargeId}, status=${status}, attempt=${maxAttempts}`);
+
         if (status === "COMPLETED" || status === "PAID") {
+          console.log("[Polling] Payment confirmed!");
           setOrderStatus("paid");
           setSuccess("Pagamento confirmado! Seu pedido foi processado com sucesso.");
           clearInterval(interval);
+          pollingRef.current = null;
         } else if (status === "FAILED" || status === "EXPIRED") {
+          console.log("[Polling] Payment failed or expired");
           setOrderStatus("failed");
           setError("Pagamento expirou ou falhou. Tente novamente.");
           clearInterval(interval);
+          pollingRef.current = null;
+        } else if (maxAttempts >= maxPolls) {
+          console.log("[Polling] Max polling attempts reached");
+          clearInterval(interval);
+          pollingRef.current = null;
         }
       } catch (err) {
         console.error("Poll error:", err);
       }
     }, 3000);
 
-    // stop polling after 30 minutes
-    setTimeout(() => clearInterval(interval), 30 * 60 * 1000);
+    // Store interval ref for cleanup
+    pollingRef.current = interval;
   }
 
   // --- AUTH CHECKS ---

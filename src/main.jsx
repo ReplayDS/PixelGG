@@ -10,6 +10,8 @@ import OrdersPage from './OrdersPage.jsx'
 import FavoritesPage from './FavoritesPage.jsx'
 import ChatPage from './ChatPage.jsx'
 import CheckoutPage from './CheckoutPage.jsx'
+import SiteHeader from './SiteHeader.jsx'
+import Footer from './Footer.jsx'
 import { SiteDataProvider } from './SiteDataContext.jsx'
 
 function Router() {
@@ -75,14 +77,22 @@ function Router() {
   }, []);
 
   if (route.page === 'admin') return <AdminPanel />;
-  if (route.page === "profile") return <ProfilePage />;
-  if (route.page === "orders") return <OrdersPage />;
-  if (route.page === "favorites") return <FavoritesPage />;
-  if (route.page === "checkout") return <CheckoutPage />;
-  if (route.page === "chat") return <ChatPage orderId={route.orderId} />;
-  if (route.page === "catalog") return <CatalogPage categoryId={route.categoryId} />;
-  if (route.page === "product") return <ProductPage productId={route.productId} />;
-  return <App />;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <SiteHeader />
+      <main style={{ flex: 1 }}>
+        {route.page === "profile" && <ProfilePage />}
+        {route.page === "orders" && <OrdersPage />}
+        {route.page === "favorites" && <FavoritesPage />}
+        {route.page === "checkout" && <CheckoutPage />}
+        {route.page === "chat" && <ChatPage orderId={route.orderId} />}
+        {route.page === "catalog" && <CatalogPage categoryId={route.categoryId} />}
+        {route.page === "product" && <ProductPage productId={route.productId} />}
+        {route.page === "store" && <App />}
+      </main>
+      <Footer />
+    </div>
+  );
 }
 
 createRoot(document.getElementById('root')).render(
