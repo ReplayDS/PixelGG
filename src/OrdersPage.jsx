@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useSiteData } from "./SiteDataContext";
 import SiteHeader from "./SiteHeader";
 import "./orders-page.css";

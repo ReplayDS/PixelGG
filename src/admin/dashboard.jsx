@@ -800,8 +800,8 @@ export default function PixelGGAdminPanel() {
     categories, addCategory, updateCategory, deleteCategory, reorderCategories,
     products, addProduct, updateProduct, deleteProduct,
     topPixelProductIds, toggleTopPixelProduct, reorderTopPixelProducts,
-    rechargeGames, addRechargeGame, updateRechargeGame, deleteRechargeGame, reorderRechargeGames,
-    rechargeOptions, addRechargeOption, updateRechargeOption, deleteRechargeOption, reorderRechargeOptions,
+    rechargeGames, addRechargeGame, updateRechargeGame, deleteRechargeGame,
+    rechargeOptions, addRechargeOption, updateRechargeOption, deleteRechargeOption,
     userAccount, authLoading, loginAdmin, logoutUser, updateUserProfile, changeUserPassword,
     resetAllData,
   } = useSiteData();
@@ -818,6 +818,7 @@ export default function PixelGGAdminPanel() {
   const [adminError, setAdminError] = useState("");
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setAdminProfileForm({
       name: userAccount.name || "",
       username: userAccount.username || "",
@@ -1056,7 +1057,7 @@ export default function PixelGGAdminPanel() {
         <div className="adm-sidebar-footer">
           <button className="adm-back-btn" onClick={() => { window.location.hash = ""; }}>
             <span className="adm-nav-icon"><Ico.ArrowLeft /></span>
-            Voltar ÃƒÂ  loja
+            Voltar ÃƒÂ  loja
           </button>
         </div>
       </aside>

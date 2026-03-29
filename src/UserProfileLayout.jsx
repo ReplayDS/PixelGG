@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { User, Heart, Package, LogOut, Key, Camera } from 'lucide-react';
 import './profile-layout.css';
 

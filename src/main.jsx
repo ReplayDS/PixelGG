@@ -10,10 +10,10 @@ import OrdersPage from './OrdersPage.jsx'
 import FavoritesPage from './FavoritesPage.jsx'
 import ChatPage from './ChatPage.jsx'
 import CheckoutPage from './CheckoutPage.jsx'
-import SiteHeader from './SiteHeader.jsx'
 import Footer from './Footer.jsx'
 import { SiteDataProvider } from './SiteDataContext.jsx'
 
+// eslint-disable-next-line react-refresh/only-export-components
 function Router() {
   const [route, setRoute] = useState(() => {
     const hash = window.location.hash || "";
@@ -79,7 +79,6 @@ function Router() {
   if (route.page === 'admin') return <AdminPanel />;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <SiteHeader />
       <main style={{ flex: 1 }}>
         {route.page === "profile" && <ProfilePage />}
         {route.page === "orders" && <OrdersPage />}

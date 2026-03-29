@@ -3,11 +3,6 @@ import { useSiteData } from "./SiteDataContext";
 import SiteHeader from "./SiteHeader";
 import "./profile-page.css";
 
-function formatBRL(value) {
-  const numeric = Number(value || 0);
-  return `R$ ${numeric.toFixed(2).replace(".", ",")}`;
-}
-
 export default function ProfilePage() {
   const { userAccount, updateUserProfile, changeUserPassword } = useSiteData();
   const [profileForm, setProfileForm] = useState({ name: "", username: "", email: "", avatar: "" });
@@ -16,6 +11,7 @@ export default function ProfilePage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setProfileForm({
       name: userAccount.name || "",
       username: userAccount.username || "",

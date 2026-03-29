@@ -14,14 +14,11 @@ async function main() {
       data: initialData,
     },
   });
-
-  // eslint-disable-next-line no-console
   console.log("Seed finalizado: SiteConfig(id=1) pronto.");
 }
 
 main()
   .catch((error) => {
-    // eslint-disable-next-line no-console
     console.error(error);
     process.exit(1);
   })

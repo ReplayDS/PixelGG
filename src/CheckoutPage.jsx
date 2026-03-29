@@ -32,7 +32,7 @@ export default function CheckoutPage() {
   
   // payment state
   const [chargeData, setChargeData] = useState(null);
-  const [orderId, setOrderId] = useState(null);
+  const [_orderId, setOrderId] = useState(null);
   const [orderStatus, setOrderStatus] = useState("pending"); // pending, waiting, paid, failed
   
   // track polling interval to clean up on unmount

@@ -11,6 +11,14 @@ export default function TopPixelGG() {
   const games = selectedProducts.length > 0 ? selectedProducts : fallbackProducts;
   const [activeIndex, setActiveIndex] = useState(0);
 
+  useEffect(() => {
+    if (games.length === 0) return;
+    const timer = window.setInterval(() => {
+      setActiveIndex(prev => ((prev + 1) % games.length + games.length) % games.length);
+    }, 4200);
+    return () => window.clearInterval(timer);
+  }, [games.length]);
+
   if (games.length === 0) return null;
 
   const index = Math.min(activeIndex, games.length - 1);
@@ -21,19 +29,13 @@ export default function TopPixelGG() {
   });
 
   function openProduct(productId) {
+    // eslint-disable-next-line react-hooks/immutability
     window.location.hash = `#produto/${productId}`;
   }
 
   function navigate(step) {
     setActiveIndex(prev => ((prev + step) % games.length + games.length) % games.length);
   }
-
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setActiveIndex(prev => ((prev + 1) % games.length + games.length) % games.length);
-    }, 4200);
-    return () => window.clearInterval(timer);
-  }, [games.length]);
 
   return (
     <section className="topdeck-wrap">

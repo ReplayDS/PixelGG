@@ -9,6 +9,7 @@ export default function Hero() {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (index >= games.length && games.length > 0) setIndex(0);
   }, [games.length, index]);
 

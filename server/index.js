@@ -36,7 +36,6 @@ async function createWooviCharge(payload) {
 
 
 if (!process.env.DATABASE_URL) {
-  // eslint-disable-next-line no-console
   console.error("DATABASE_URL nao configurada. Crie o arquivo .env antes de iniciar a API.");
   process.exit(1);
 }
@@ -326,7 +325,6 @@ async function notifySale(order) {
       body: JSON.stringify({ content }),
     });
   } catch (e) {
-    // eslint-disable-next-line no-console
     console.error("Failed to send webhook", e);
   }
 }
@@ -504,7 +502,7 @@ app.get("/api/checkout/woovi/:chargeId", authRequired, async (req, res) => {
         const ident = actualCharge.identifier || actualCharge.transactionID || actualCharge.paymentLinkID;
         order = await prisma.order.findFirst({ where: { wooviChargeId: ident } });
       }
-    } catch (e) {
+    } catch {
       // ignore DB lookup errors here
     }
 
@@ -758,12 +756,10 @@ if (process.env.NODE_ENV === "production") {
 ensureDefaultAdmin()
   .then(() => {
     app.listen(port, () => {
-      // eslint-disable-next-line no-console
       console.log(`[pixelgg-api] running on http://localhost:${port}`);
     });
   })
   .catch((error) => {
-    // eslint-disable-next-line no-console
     console.error("Falha ao preparar API:", error);
     process.exit(1);
   });

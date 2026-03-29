@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSiteData } from "./SiteDataContext";
 import "./site-header.css";
 
@@ -7,15 +7,8 @@ function formatBRL(value) {
   return `R$ ${numeric.toFixed(2).replace(".", ",")}`;
 }
 
-function formatDate(value) {
-  if (!value) return "-";
-  const date = new Date(value);
-  return date.toLocaleDateString("pt-BR");
-}
-
 export default function SiteHeader() {
   const {
-    products,
     cartProducts,
     cartTotal,
     removeFromCart,
@@ -26,10 +19,6 @@ export default function SiteHeader() {
     loginUser,
     registerUser,
     logoutUser,
-    updateUserProfile,
-    changeUserPassword,
-    favoriteProducts,
-    userOrders,
   } = useSiteData();
 
   const [openPopup, setOpenPopup] = useState(null);
@@ -39,22 +28,6 @@ export default function SiteHeader() {
 
   const [loginForm, setLoginForm] = useState({ login: "", password: "" });
   const [registerForm, setRegisterForm] = useState({ name: "", username: "", email: "", password: "" });
-  const [profileForm, setProfileForm] = useState({
-    name: userAccount.name || "",
-    username: userAccount.username || "",
-    email: userAccount.email || "",
-    avatar: userAccount.avatar || "/img/user.png",
-  });
-  const [passwordForm, setPasswordForm] = useState({ currentPassword: "", newPassword: "" });
-
-  useEffect(() => {
-    setProfileForm({
-      name: userAccount.name || "",
-      username: userAccount.username || "",
-      email: userAccount.email || "",
-      avatar: userAccount.avatar || "/img/user.png",
-    });
-  }, [userAccount]);
 
   const cartCount = cartProducts.reduce((sum, item) => sum + item.qty, 0);
 
@@ -102,29 +75,6 @@ export default function SiteHeader() {
       setRegisterForm({ name: "", username: "", email: "", password: "" });
     } catch (error) {
       setAuthError(error.message);
-    }
-  }
-
-  async function handleProfileSave(e) {
-    e.preventDefault();
-    setActionMsg("");
-    try {
-      await updateUserProfile(profileForm);
-      setActionMsg("Perfil atualizado.");
-    } catch (error) {
-      setActionMsg(error.message);
-    }
-  }
-
-  async function handleChangePassword(e) {
-    e.preventDefault();
-    setActionMsg("");
-    try {
-      await changeUserPassword(passwordForm.currentPassword, passwordForm.newPassword);
-      setPasswordForm({ currentPassword: "", newPassword: "" });
-      setActionMsg("Senha alterada com sucesso.");
-    } catch (error) {
-      setActionMsg(error.message);
     }
   }
 
